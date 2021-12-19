@@ -1,9 +1,9 @@
 import { parseFile } from '@fast-csv/parse';
+import { Decoder } from '../decoder/Decoder';
 
 export class CsvProcessor {
   constructor(
-    private route: string, 
-    private batchSize: number, 
+    private route: string,
     private delimiter: string,
     private includesHeader: boolean = false,
   ) {}
@@ -12,10 +12,10 @@ export class CsvProcessor {
     parseFile(this.route, {
       delimiter: this.delimiter,
       headers: this.includesHeader,
-      maxRows: this.batchSize,
     }).on('data', row => {
       const values = row[0].split(',');
-      // use decoder;
+      const decoder = new Decoder(values[1], values[2]);
+      console.log(`Player ${values[0]} score is ${decoder.decodeValue()}`);
     }).on('end', () => {
       console.log('File processed')
     }).on('error', (err) => {
